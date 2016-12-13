@@ -5,10 +5,14 @@ import scrapy
 from scrapy import Selector
 from scrapy.spider import CrawlSpider
 
+from lbisinaspider.items import UserProfileItem
+
 FOLLOW_URL = 'http://weibo.cn/{0}/follow'
 FANS_URL = 'http://weibo.cn/{0}/fans'
 PROFILE_URL = 'http://weibo.cn/{0}/profile?filter=1&page=1'
-INFOMATION_URL = 'http://weibo.cn/attgroup/opening?uid={0}'
+
+INFOMATION1_URL = 'http://weibo.cn/attgroup/opening?uid={0}'
+INFOMATION2_URL = 'http://weibo.cn/{0}/info'
 
 HOME_URL = 'http://weibo.cn/u/{0}'
 
@@ -33,26 +37,30 @@ class SinaSpider(CrawlSpider):
         # PROFILE_URL = PROFILE_URL.format(user_id)
         # GROUPS_URL = GROUPS_URL.format(user_id)
 
-        yield scrapy.Request(url=INFOMATION_URL, meta={'id': user_id}, callback=self.parser_user)
+        yield scrapy.Request(url=INFOMATION_URL, meta={'id': user_id}, callback=self.parser_user_profile1)
         # yield scrapy.Request(url=PROFILE_URL, meta={'id': user_id}, callback=self.paser_user_profile)
         # yield scrapy.Request(url=FOLLOW_URL, meta={'id': user_id}, callback=self.paser_follow)
         # yield scrapy.Request(url=FANS_URL, meta={'id': user_id}, callback=self.paser_fans)
 
-    def parser_user(self, response):
+    def parser_user_profile1(self, response):
         selector = Selector(response)
         result = selector.xpath("//div[@class='u']/div[@class='tip2']/a/text()").extract()
 
-        user_id = response.meta['id']
-
+        user_profile = UserProfileItem()
         result = ','.join(result)
         m = re.search('微博\[(?P<weibo_num>\d+)\],关注\[(?P<follow_num>\d+)\],粉丝\[(?P<fans_num>\d+)\]', result)
-        weibo_num = m.group('weibo_num')
-        follow_num = m.group('follow_num')
-        fans_num = m.group('fans_num')
+        user_profile['weibo_num'] = m.group('weibo_num')
+        user_profile['follow_num'] = m.group('follow_num')
+        user_profile['fans_num'] = m.group('fans_num')
+        user_id = response.meta['id']
+        user_profile['user_id'] = user_id
 
-        print(result)
+        global INFOMATION2_URL
+        INFOMATION2_URL = INFOMATION2_URL.format(user_id)
 
-    def paser_user_profile(self, response):
+        yield scrapy.Request(url=INFOMATION2_URL, meta={'item': UserProfileItem}, callback=self.paser_user_profile2)
+
+    def paser_user_profile2(self, response):
         pass
 
     def paser_follow(self, response):

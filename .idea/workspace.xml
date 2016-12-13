@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0322faa-0f16-4140-aa94-5c36868fa121" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/begin.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lbisinaspider/cookies.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lbisinaspider/middlewares.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lbisinaspider/items.py" afterPath="$PROJECT_DIR$/lbisinaspider/items.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lbisinaspider/settings.py" afterPath="$PROJECT_DIR$/lbisinaspider/settings.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py" afterPath="$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,21 +23,21 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="items.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="items.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lbisinaspider/items.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+            <state relative-caret-position="264">
+              <caret line="16" column="33" lean-forward="false" selection-start-line="16" selection-start-column="33" selection-end-line="16" selection-end-column="33" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sina_spider.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="sina_spider.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="47" column="37" lean-forward="false" selection-start-line="47" selection-start-column="37" selection-end-line="47" selection-end-column="37" />
+            <state relative-caret-position="564">
+              <caret line="63" column="12" lean-forward="true" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="12" />
               <folding>
                 <element signature="e#15#24#0" expanded="true" />
               </folding>
@@ -157,8 +150,8 @@
         <option value="$PROJECT_DIR$/lbisinaspider/settings.py" />
         <option value="$PROJECT_DIR$/lbisinaspider/cookies.py" />
         <option value="$PROJECT_DIR$/lbisinaspider/middlewares.py" />
-        <option value="$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py" />
         <option value="$PROJECT_DIR$/lbisinaspider/items.py" />
+        <option value="$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py" />
       </list>
     </option>
   </component>
@@ -562,11 +555,11 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py</url>
-          <line>25</line>
+          <line>29</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py</url>
-          <line>41</line>
+          <line>45</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -764,21 +757,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py">
+    <entry file="file://$PROJECT_DIR$/lbisinaspider/items.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="47" column="37" lean-forward="false" selection-start-line="47" selection-start-column="37" selection-end-line="47" selection-end-column="37" />
-          <folding>
-            <element signature="e#15#24#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="264">
+          <caret line="16" column="33" lean-forward="false" selection-start-line="16" selection-start-column="33" selection-end-line="16" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lbisinaspider/items.py">
+    <entry file="file://$PROJECT_DIR$/lbisinaspider/spiders/sina_spider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="564">
+          <caret line="63" column="12" lean-forward="true" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="12" />
+          <folding>
+            <element signature="e#15#24#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

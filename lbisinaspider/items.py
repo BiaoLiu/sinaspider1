@@ -14,5 +14,8 @@ class LbisinaspiderItem(scrapy.Item):
     pass
 
 
-class UserProfile:
-    scrapy.Field()
+class UserProfileItem(scrapy.Item):
+    user_id = scrapy.Field()
+    weibo_num = scrapy.Field()
+    follow_num = scrapy.Field()
+    fans_num = scrapy.Field()
