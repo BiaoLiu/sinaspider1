@@ -19,3 +19,8 @@ class UserProfileItem(scrapy.Item):
     weibo_num = scrapy.Field()
     follow_num = scrapy.Field()
     fans_num = scrapy.Field()
+
+    nickname = scrapy.Field()
+    gender = scrapy.Field()
+    city = scrapy.Field()
+    birthday = scrapy.Field()

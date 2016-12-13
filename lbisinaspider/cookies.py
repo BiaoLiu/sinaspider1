@@ -5,7 +5,7 @@ import json
 import requests
 
 WEIBO_ACCOUNTS = [
-    {'username': '452381072@qq.com', 'password': 'liubiaocan771121'}
+    {'username': '12345678@qq.com', 'password': '12345678'}
 ]
 
 
@@ -16,9 +16,12 @@ def get_cookies(accounts=None):
     login_url = 'https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.15)'
     cookies = []
 
-    proxies = {
-        'http': 'http://dev-proxy.oa.com:8080',
-        'https': 'http://dev-proxy.oa.com:8080'
+    # proxies = {
+    #     'http': 'http://dev-proxy.oa.com:8080',
+    #     'https': 'http://dev-proxy.oa.com:8080'
+    # }
+    proxies={
+
     }
 
     for item in accounts:

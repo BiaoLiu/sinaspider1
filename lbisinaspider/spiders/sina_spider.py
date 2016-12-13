@@ -11,6 +11,7 @@ FOLLOW_URL = 'http://weibo.cn/{0}/follow'
 FANS_URL = 'http://weibo.cn/{0}/fans'
 PROFILE_URL = 'http://weibo.cn/{0}/profile?filter=1&page=1'
 
+# 获取微博数、关注数、粉丝数
 INFOMATION1_URL = 'http://weibo.cn/attgroup/opening?uid={0}'
 INFOMATION2_URL = 'http://weibo.cn/{0}/info'
 
@@ -27,17 +28,19 @@ class SinaSpider(CrawlSpider):
     ]
 
     def start_requests(self):
-        global HOME_URL, FOLLOW_URL, FANS_URL, PROFILE_URL, INFOMATION_URL
+        global HOME_URL, FOLLOW_URL, FANS_URL, PROFILE_URL, INFOMATION1_URL
 
         user_id = self.start_urls.pop()
 
-        INFOMATION_URL = INFOMATION_URL.format(user_id)
+        INFOMATION1_URL = INFOMATION1_URL.format(user_id)
         # FOLLOW_URL = FOLLOW_URL.format(user_id)
         # FANS_URL = FANS_URL.format(user_id)
         # PROFILE_URL = PROFILE_URL.format(user_id)
         # GROUPS_URL = GROUPS_URL.format(user_id)
 
-        yield scrapy.Request(url=INFOMATION_URL, meta={'id': user_id}, callback=self.parser_user_profile1)
+        # yield scrapy.Request(url=INFOMATION1_URL, meta={'id': user_id}, callback=self.parser_user_profile1)
+        yield scrapy.Request(url=INFOMATION2_URL, meta={'id': user_id}, callback=self.parser_user_profile2)
+
         # yield scrapy.Request(url=PROFILE_URL, meta={'id': user_id}, callback=self.paser_user_profile)
         # yield scrapy.Request(url=FOLLOW_URL, meta={'id': user_id}, callback=self.paser_follow)
         # yield scrapy.Request(url=FANS_URL, meta={'id': user_id}, callback=self.paser_fans)
@@ -58,10 +61,16 @@ class SinaSpider(CrawlSpider):
         global INFOMATION2_URL
         INFOMATION2_URL = INFOMATION2_URL.format(user_id)
 
-        yield scrapy.Request(url=INFOMATION2_URL, meta={'item': UserProfileItem}, callback=self.paser_user_profile2)
+        yield scrapy.Request(url=INFOMATION2_URL, meta={'item': UserProfileItem}, callback=self.parser_user_profile2)
 
-    def paser_user_profile2(self, response):
-        pass
+    def parser_user_profile2(self, response):
+        selector = Selector(response)
+        result = selector.xpath("//div[@class='tip'][1]/following-sibling::*[1]")
+        result2 = selector.xpath("//div[@class='tip' and position()=1]")
+
+        result3=selector.xpath("//div[@class='tip']")
+
+        print(result)
 
     def paser_follow(self, response):
         pass

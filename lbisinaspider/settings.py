@@ -53,7 +53,7 @@ ROBOTSTXT_OBEY = False
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
-    'lbisinaspider.middlewares.ProxyMiddleware': 100,
+    # 'lbisinaspider.middlewares.ProxyMiddleware': 100,
     'lbisinaspider.middlewares.CookieMiddleware': 101,
 }
 
