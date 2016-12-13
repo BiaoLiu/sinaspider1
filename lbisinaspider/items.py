@@ -13,3 +13,6 @@ class LbisinaspiderItem(scrapy.Item):
     # name = scrapy.Field()
     pass
 
+
+class UserProfile:
+    scrapy.Field()
