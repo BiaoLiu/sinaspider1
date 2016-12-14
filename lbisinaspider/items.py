@@ -24,3 +24,18 @@ class UserProfileItem(scrapy.Item):
     gender = scrapy.Field()
     city = scrapy.Field()
     birthday = scrapy.Field()
+
+    sex_orientation = scrapy.Field()
+    marriage = scrapy.Field()
+    signature = scrapy.Field()
+
+
+class WeiboItem(scrapy.Item):
+    weibo_id = scrapy.Field()
+    content = scrapy.Field()
+    like_num = scrapy.Field()
+    comment_num = scrapy.Field()
+    reshare_num = scrapy.Field()
+
+    tools = scrapy.Field()
+    pubtime = scrapy.Field()

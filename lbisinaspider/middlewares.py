@@ -10,4 +10,5 @@ class ProxyMiddleware:
 
 class CookieMiddleware:
     def process_request(self, request, spider):
-        request.cookies = random.choice(get_cookies())
+        if not request.cookies:
+            request.cookies = random.choice(get_cookies())
