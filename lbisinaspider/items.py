@@ -32,10 +32,11 @@ class UserProfileItem(scrapy.Item):
 
 class WeiboItem(scrapy.Item):
     weibo_id = scrapy.Field()
+    user_id=scrapy.Field()
     content = scrapy.Field()
     like_num = scrapy.Field()
     comment_num = scrapy.Field()
-    reshare_num = scrapy.Field()
+    share_num = scrapy.Field()
 
-    tools = scrapy.Field()
-    pubtime = scrapy.Field()
+    pub_time = scrapy.Field()
+    pub_client = scrapy.Field()
