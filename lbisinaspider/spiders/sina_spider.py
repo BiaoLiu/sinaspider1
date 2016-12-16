@@ -6,6 +6,9 @@ from scrapy import Selector
 from scrapy.spider import CrawlSpider, Spider
 
 from lbisinaspider.items import UserProfileItem, WeiboItem
+from lbisinaspider.cookies import get_cookies
+import random
+import time
 
 # 关注
 FOLLOW_URL = 'http://weibo.cn/{0}/follow'
@@ -26,38 +29,33 @@ class SinaSpider(Spider):
     host = 'http://weibo.cn'
     allowed_domains = ['http://weibo.cn']
     delay = 2
-    # start_urls = [
+    retry_num = 0
+    finish_user_ids = []
+
+    # start_user_ids = [
     #     5235640836, 5676304901, 5871897095, 2139359753, 5579672076, 2517436943, 5778999829, 5780802073, 2159807003,
     #     1756807885, 3378940452, 5762793904, 1885080105, 5778836010, 5722737202, 3105589817, 5882481217, 5831264835,
     #     2717354573, 3637185102, 1934363217, 5336500817, 1431308884, 5818747476, 5073111647, 5398825573, 2501511785,
     # ]
-
-    finish_user_ids = []
-
-    # start_urls = [
-    #     5235640836, 5676304901
-    # ]
-
-    start_user_ids = set([5235640836, 5676304901])
-
-    # def start_request(self):
-    #     return scrapy.Request(url='https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.15)',callback=self.post_login)
-
+    start_user_ids = set([5235640836])
 
     def start_requests(self):
         global FOLLOW_URL, FANS_URL, POSTED_WEIBO_URL, INFOMATION1_URL
-        while len(self.start_user_ids) > 0:
+        while True:
+            if len(self.start_user_ids) == 0:
+                if self.retry_num < 3:
+                    # time.sleep(60)
+                    self.retry_num = self.retry_num + 1
+                    continue
+                    # else:
+                    #     break
+
             user_id = self.start_user_ids.pop()
-
             infomation1_url = INFOMATION1_URL.format(user_id)
-            posted_weibo_url = POSTED_WEIBO_URL.format(user_id)
-            follow_url = FOLLOW_URL.format(user_id)
-            fans_url = FANS_URL.format(user_id)
+            cookies = random.choice(get_cookies())
 
-            # yield scrapy.Request(url=infomation1_url, meta={'id': user_id}, callback=self.parser_user_profile1)
-            # yield scrapy.Request(url=posted_weibo_url, meta={'id': user_id}, callback=self.parser_posted_weibo)
-            yield scrapy.Request(url=follow_url, meta={'id': user_id}, callback=self.parser_follow_fans)
-            # yield scrapy.Request(url=fans_url, meta={'id': user_id}, callback=self.parser_follow_fans)
+            yield scrapy.Request(url=infomation1_url, meta={'id': user_id}, cookies=cookies,
+                                 callback=self.parser_user_profile1)
 
             self.finish_user_ids.append(user_id)
 
@@ -77,24 +75,36 @@ class SinaSpider(Spider):
 
         global INFOMATION2_URL, FANS_URL
         infomation2_url = INFOMATION2_URL.format(user_id)
+        post_weibo_url = POSTED_WEIBO_URL.format(user_id)
+        follow_url = FOLLOW_URL.format(user_id)
+        fans_url = FANS_URL.format(user_id)
 
-        yield scrapy.Request(url=infomation2_url, meta={'item': user_profile}, callback=self.parser_user_profile2,
+        cookies = response.request.cookies
+
+        yield scrapy.Request(url=infomation2_url, meta={'item': user_profile}, cookies=cookies,
+                             callback=self.parser_user_profile2,
+                             dont_filter=True)
+        yield scrapy.Request(url=post_weibo_url, meta={'id': user_id}, cookies=cookies,
+                             callback=self.parser_post_weibo, dont_filter=True)
+        yield scrapy.Request(url=follow_url, meta={'id': user_id}, cookies=cookies, callback=self.parser_follow_fans,
+                             dont_filter=True)
+        yield scrapy.Request(url=fans_url, meta={'id': user_id}, cookies=cookies, callback=self.parser_follow_fans,
                              dont_filter=True)
 
     def parser_user_profile2(self, response):
         '''  抓取用户信息 '''
         selector = Selector(response)
         result = selector.xpath("//div[@class='tip'][1]/following::*[1]/text()").extract()
-
-        user_profile = response.meta['item']
-
         # result = selector.xpath("//div[@class='tip'][1]/following-sibling::*[1]")
         # result2 = selector.xpath("//div[@class='tip'][position()=1]")
         # result3 = selector.xpath("//div[@class='tip']")
 
+        user_profile = response.meta['item']
         result = ','.join(result)
 
         m1 = re.search('昵称:(\S+?),', result)
+        if not m1:
+            return
         m2 = re.search('性别:(\S+?),', result)
         m3 = re.search('地区:(\S+?),', result)
         m4 = re.search('生日:(\S+?),', result)
@@ -112,7 +122,7 @@ class SinaSpider(Spider):
 
         yield user_profile
 
-    def parser_posted_weibo(self, response):
+    def parser_post_weibo(self, response):
         ''' 抓取发布的微博'''
         selector = Selector(response)
         result = selector.xpath("//div[@class='c' and @id]")
@@ -141,7 +151,11 @@ class SinaSpider(Spider):
         next_url = selector.xpath("//div[@class='pa' and @id='pagelist']/form/div/a[text()='下页']/@href").extract_first()
         print(next_url)
         if next_url:
-            yield scrapy.Request(url=self.host + next_url, callback=self.parser_posted_weibo, dont_filter=True)
+            cookies = response.request.cookies
+            yield scrapy.Request(url=self.host + next_url, meta={'id': user_id}, callback=self.parser_post_weibo,
+                                 cookies=cookies,
+                                 dont_filter=True)
+        yield
 
     def parser_follow_fans(self, response):
         '''抓取关注、粉丝'''
@@ -159,4 +173,6 @@ class SinaSpider(Spider):
         next_url = selector.xpath("//div[@class='pa' and @id='pagelist']/form/div/a[text()='下页']/@href").extract_first()
         print(next_url)
         if next_url:
-            yield scrapy.Request(url=self.host + next_url, callback=self.parser_follow_fans, dont_filter=True)
+            cookies = response.request.cookies
+            yield scrapy.Request(url=self.host + next_url, callback=self.parser_follow_fans, cookies=cookies,
+                                 dont_filter=True)
