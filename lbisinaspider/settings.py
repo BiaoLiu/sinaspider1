@@ -90,10 +90,17 @@ ITEM_PIPELINES = {
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+# DATABASES = {
+#     'NAME': 'sinaspider',
+#     'HOST': '127.0.0.1',
+#     'PORT': 3306,
+#     'USER': 'root',
+#     'PASSWORD': 'liubiao123456'
+# }
 DATABASES = {
     'NAME': 'sinaspider',
-    'HOST': '127.0.0.1',
+    'HOST': '120.27.46.167',
     'PORT': 3306,
     'USER': 'root',
-    'PASSWORD': 'liubiao123456'
+    'PASSWORD': 'liubiao287536'
 }

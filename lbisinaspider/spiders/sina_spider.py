@@ -37,24 +37,16 @@ class SinaSpider(Spider):
     #     1756807885, 3378940452, 5762793904, 1885080105, 5778836010, 5722737202, 3105589817, 5882481217, 5831264835,
     #     2717354573, 3637185102, 1934363217, 5336500817, 1431308884, 5818747476, 5073111647, 5398825573, 2501511785,
     # ]
-    start_user_ids = set([5235640836])
+    start_user_ids = set([3204479863])
 
     def start_requests(self):
         global FOLLOW_URL, FANS_URL, POSTED_WEIBO_URL, INFOMATION1_URL
-        while True:
-            if len(self.start_user_ids) == 0:
-                if self.retry_num < 3:
-                    # time.sleep(60)
-                    self.retry_num = self.retry_num + 1
-                    continue
-                    # else:
-                    #     break
-
+        while len(self.start_user_ids) > 0:
             user_id = self.start_user_ids.pop()
             infomation1_url = INFOMATION1_URL.format(user_id)
-            cookies = random.choice(get_cookies())
+            # cookies = random.choice(get_cookies())
 
-            yield scrapy.Request(url=infomation1_url, meta={'id': user_id}, cookies=cookies,
+            yield scrapy.Request(url=infomation1_url, meta={'id': user_id},
                                  callback=self.parser_user_profile1)
 
             self.finish_user_ids.append(user_id)
@@ -79,16 +71,16 @@ class SinaSpider(Spider):
         follow_url = FOLLOW_URL.format(user_id)
         fans_url = FANS_URL.format(user_id)
 
-        cookies = response.request.cookies
+        # cookies = response.request.cookies
 
-        yield scrapy.Request(url=infomation2_url, meta={'item': user_profile}, cookies=cookies,
+        yield scrapy.Request(url=infomation2_url, meta={'item': user_profile},
                              callback=self.parser_user_profile2,
                              dont_filter=True)
-        yield scrapy.Request(url=post_weibo_url, meta={'id': user_id}, cookies=cookies,
+        yield scrapy.Request(url=post_weibo_url, meta={'id': user_id},
                              callback=self.parser_post_weibo, dont_filter=True)
-        yield scrapy.Request(url=follow_url, meta={'id': user_id}, cookies=cookies, callback=self.parser_follow_fans,
+        yield scrapy.Request(url=follow_url, meta={'id': user_id}, callback=self.parser_follow_fans,
                              dont_filter=True)
-        yield scrapy.Request(url=fans_url, meta={'id': user_id}, cookies=cookies, callback=self.parser_follow_fans,
+        yield scrapy.Request(url=fans_url, meta={'id': user_id}, callback=self.parser_follow_fans,
                              dont_filter=True)
 
     def parser_user_profile2(self, response):
@@ -151,28 +143,34 @@ class SinaSpider(Spider):
         next_url = selector.xpath("//div[@class='pa' and @id='pagelist']/form/div/a[text()='下页']/@href").extract_first()
         print(next_url)
         if next_url:
-            cookies = response.request.cookies
+            # cookies = response.request.cookies
             yield scrapy.Request(url=self.host + next_url, meta={'id': user_id}, callback=self.parser_post_weibo,
-                                 cookies=cookies,
                                  dont_filter=True)
-        yield
+        else:
+            print('没有下一页了...')
 
     def parser_follow_fans(self, response):
         '''抓取关注、粉丝'''
         selector = Selector(response)
         result = selector.xpath("//table//tr/td[2]/a[last()]/@href").extract()
 
+        global INFOMATION1_URL
+        # cookies = response.request.cookies
+
         pattern = re.compile('uid=(\d+)')
         for item in result:
             m = pattern.search(item)
             user_id = int(m.group(1))
             if user_id not in self.finish_user_ids:
-                self.start_user_ids.add(user_id)
+                # self.start_user_ids.add(user_id)
+                infomation1_url = INFOMATION1_URL.format(user_id)
+                yield scrapy.Request(url=infomation1_url, meta={'id': user_id},
+                                     callback=self.parser_user_profile1, dont_filter=True)
 
         # 下页
         next_url = selector.xpath("//div[@class='pa' and @id='pagelist']/form/div/a[text()='下页']/@href").extract_first()
         print(next_url)
         if next_url:
-            cookies = response.request.cookies
-            yield scrapy.Request(url=self.host + next_url, callback=self.parser_follow_fans, cookies=cookies,
+            # cookies = response.request.cookies
+            yield scrapy.Request(url=self.host + next_url, callback=self.parser_follow_fans,
                                  dont_filter=True)
